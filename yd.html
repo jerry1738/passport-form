@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Input to Table Converter</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px 10px;
+            text-align: center;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .tabs {
+            display: flex;
+            justify-content: space-evenly;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #007BFF;
+        }
+        .tab {
+            padding: 15px 25px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+        }
+        .tab:hover {
+            background-color: #0056b3;
+        }
+        .tab.active {
+            background-color: #0056b3;
+        }
+        .tab-content {
+            display: none;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-radius: 0 0 5px 5px;
+            border-top: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        input, select, textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 25px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow: hidden;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+        th, td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        /* Modal Style */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #aaa;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .copy-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Form Input to Table Converter</h1>
+        <p>Easily visualize JSON data in a clean and professional table format</p>
+    </header>
+    <main>
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('formToJSON')">Form to JSON</div>
+            <div class="tab" onclick="showTab('jsonToTable')">JSON to Table</div>
+        </div>
+        <div id="formToJSON" class="tab-content active">
+            <h2>Enter Form Data</h2>
+            <form id="formData">
+                <input type="text" id="firstName" placeholder="First Name" required>
+                <input type="text" id="middleName" placeholder="Middle Name" required>
+                <input type="text" id="lastName" placeholder="Last Name" required>
+                <input type="text" id="date-picker-dialog" placeholder="Date of Birth (MM/DD/YY)" required>
+                <input type="text" id="geezFirstName" placeholder="Geez First Name" readonly>
+                <input type="text" id="geezMiddleName" placeholder="Geez Middle Name" readonly>
+                <input type="text" id="geezLastName" placeholder="Geez Last Name" readonly>
+                <input type="text" id="nationalityId" value="1" placeholder="Nationality ID" disabled>
+                <input type="text" id="phoneNumber" placeholder="Phone Number" required>
+                <input type="text" id="birthPlace" placeholder="Place of Birth" required>
+                <select id="occupationId" value="Select occupation" disabled>
+                    <option value="Select occupation">Select occupation</option>
+                    <option value="Occupation1">Occupation 1</option>
+                    <option value="Occupation2">Occupation 2</option>
+                </select>
+                <input type="text" id="hairColor" value="Black" placeholder="Hair Color" disabled>
+                <select id="gender" required>
+                    <option value="">Select gender</option>
+                    <option value="1">Male</option>
+                    <option value="0">Female</option>
+                </select>
+                <select id="martialStatus" value="0" disabled>
+                    <option value="0">Single</option>
+                    <option value="1">Married</option>
+                </select>
+                <input type="checkbox" id="isUnder18" disabled>
+                <label for="isUnder18">Is Under 18?</label>
+                <input type="checkbox" id="isAdoption" disabled>
+                <label for="isAdoption">Is Adoption?</label>
+                <input type="checkbox" id="defaultUncheckedDisabled2" disabled>
+                <label for="defaultUncheckedDisabled2">Default Unchecked Disabled</label>
+            </form>
+            <button onclick="generateJSON()">Generate JSON</button>
+        </div>
+        <div id="jsonToTable" class="tab-content">
+            <h2>Paste JSON Here</h2>
+            <textarea id="jsonInput" placeholder="Paste JSON here..."></textarea>
+            <button onclick="generateTable()">Generate Table</button>
+            <div id="tableContainer"></div>
+        </div>
+    </main>
+
+    <!-- Modal for JSON -->
+    <div id="jsonModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <button class="copy-btn" onclick="copyJSON()">Copy JSON</button>
+            <pre id="jsonContent"></pre>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 JSON Table Converter. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        function generateJSON() {
+            const formData = document.getElementById('formData');
+            const formElements = formData.elements;
+
+            const content = {};
+            for (let i = 0; i < formElements.length; i++) {
+                const element = formElements[i];
+                if (element.type === 'checkbox') {
+                    content[element.id] = element.checked.toString();
+                } else if (element.type !== 'submit') {
+                    content[element.id] = element.value;
+                }
+            }
+
+            // Ensure Geez names are the same as English names
+            content.geezFirstName = content.firstName.toUpperCase();
+            content.geezMiddleName = content.middleName.toUpperCase();
+            content.geezLastName = content.lastName.toUpperCase();
+            content.birthPlace = content.birthPlace.toUpperCase();
+
+            // Format date to MM/DD/YY
+            const date = new Date(content['date-picker-dialog']);
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(-2);
+            content['date-picker-dialog'] = `${month}/${day}/${year}`;
+
+            const json = {
+                url: "https://www.ethiopianpassportservices.gov.et/urgent-appointment",
+                autoSubmit: false,
+                submitQuery: "",
+                content: JSON.stringify(content),
+                name: content.firstName,
+                hotkey: ""
+            };
+
+            const jsonString = JSON.stringify(json, null, 2);
+            document.getElementById('jsonContent').textContent = jsonString;
+
+            // Show the modal with the JSON
+            document.getElementById('jsonModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('jsonModal').style.display = 'none';
+        }
+
+        function copyJSON() {
+            const jsonContent = document.getElementById('jsonContent');
+            navigator.clipboard.writeText(jsonContent.textContent).then(() => {
+                alert('JSON copied to clipboard!');
+            });
+        }
+
+        function generateTable() {
+            const input = document.getElementById('jsonInput').value;
+            const container = document.getElementById('tableContainer');
+
+            try {
+                const data = JSON.parse(input);
+                const nestedContent = JSON.parse(data.content); // Parse the nested 'content' field
+                const table = document.createElement('table');
+
+                // Add table headers
+                const headerRow = document.createElement('tr');
+                const headers = ['Input Field', 'Value'];
+
+                headers.forEach(headerText => {
+                    const th = document.createElement('th');
+                    th.textContent = headerText;
+                    headerRow.appendChild(th);
+                });
+                table.appendChild(headerRow);
+
+                // Define a mapping of specific field names to readable labels
+                const fieldMappings = {
+                    firstName: 'First Name',
+                    middleName: 'Middle Name',
+                    lastName: 'Last Name',
+                    'date-picker-dialog': 'Date of Birth',
+                    geezFirstName: 'Geez First Name',
+                    geezMiddleName: 'Geez Middle Name',
+                    geezLastName: 'Geez Last Name',
+                    nationalityId: 'Nationality ID',
+                    phoneNumber: 'Phone Number',
+                    birthPlace: 'Place of Birth',
+                    occupationId: 'Occupation',
+                    hairColor: 'Hair Color',
+                    gender: 'Gender',
+                    martialStatus: 'Marital Status',
+                    isUnder18: 'Is Under 18?',
+                    isAdoption: 'Is Adoption?',
+                    defaultUncheckedDisabled2: 'Default Unchecked Disabled'
+                };
+
+                // Add rows for nested content fields
+                Object.entries(fieldMappings).forEach(([field, label]) => {
+                    if (field in nestedContent) {
+                        const row = document.createElement('tr');
+
+                        const fieldCell = document.createElement('td');
+                        fieldCell.textContent = label;
+                        row.appendChild(fieldCell);
+
+                        const valueCell = document.createElement('td');
+                        valueCell.textContent = nestedContent[field];
+                        row.appendChild(valueCell);
+
+                        table.appendChild(row);
+                    }
+                });
+
+                // Clear previous content and append the new table
+                container.innerHTML = '';
+                container.appendChild(table);
+            } catch (error) {
+                container.innerHTML = '<p style="color: red;">Invalid JSON input. Please try again.</p>';
+            }
+        }
+
+        // Update Geez names when English names change
+        document.getElementById('firstName').addEventListener('input', function() {
+            document.getElementById('geezFirstName').value = this.value.toUpperCase();
+        });
+        document.getElementById('middleName').addEventListener('input', function() {
+            document.getElementById('geezMiddleName').value = this.value.toUpperCase();
+        });
+        document.getElementById('lastName').addEventListener('input', function() {
+            document.getElementById('geezLastName').value = this.value.toUpperCase();
+        });
+
+        document.getElementById('birthPlace').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+
+        // Initialize the first tab as active
+        showTab('formToJSON');
+    </script>
+</body>
+</html>
