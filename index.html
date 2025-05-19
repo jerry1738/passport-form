@@ -265,11 +265,11 @@
             content.geezLastName = content.lastName.toUpperCase();
             content.birthPlace = content.birthPlace.toUpperCase();
 
-            // Format date to MM/DD/YY
+            // Format date to MM/DD/YYYY (with 4-digit year)
             const date = new Date(content['date-picker-dialog']);
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
-            const year = String(date.getFullYear()).slice(-2);
+            const year = String(date.getFullYear()); // <--- Full year
             content['date-picker-dialog'] = `${month}/${day}/${year}`;
 
             const json = {
